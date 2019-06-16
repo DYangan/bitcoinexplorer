@@ -13,8 +13,7 @@ public class BlockGetDTO {
     private  Double difficulty;
     private Integer  size;
 
-
-    public String getBlockhash(String s) {
+    public String getBlockhash() {
         return blockhash;
     }
 

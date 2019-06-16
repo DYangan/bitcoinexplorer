@@ -38,8 +38,8 @@ public class BlockController
             @GetMapping("/getByBlockhash")
              public BlockGetDTO getByBlockhash(@RequestParam String blcokhash){
                 BlockGetDTO blockGetDTO = new BlockGetDTO();
-                blockGetDTO.setBlockhash("0000000000000000000e9a32f6ad64b425c3aaa2da608098629203c42f3bca06");
                 blockGetDTO.setHeight(580785);
+                blockGetDTO.setBlockhash("0000000000000000000e9a32f6ad64b425c3aaa2da608098629203c42f3bca06");
                 blockGetDTO.setPreBlock("00000000000000000014bf1693dfb2493e0b32ac00fbdb96f04c4d3c2add197e");
                 blockGetDTO.setNextBlock("00000000000000000020baaa1796d87bd84fdfb150d9dc87bbf4c4e6b4e287b3");
                 blockGetDTO.setMerkleRoot("26cc730cdab9f4a1fc0b79a5d6878e31cb28a31f97fc5a1d5218ef05788901d3");
