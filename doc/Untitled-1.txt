@@ -1,0 +1,16 @@
+GET /rest/block/<BLOCK-HASH>.<bin|hex|json>
+
+GET /rest/block/0000000000000192c45fbd2ba033070d0a30763995d1243b886a73810af95dbd.json
+
+GET /rest/block/notxdetails/<BLOCK-HASH>.<bin|hex|json>
+
+GET /rest/block/notxdetails/0000000000000192c45fbd2ba033070d0a30763995d1243b886a73810af95dbd.json
+
+GET /rest/headers/<COUNT>/<BLOCK-HASH>.<bin|hex|json>
+GET /rest/headers/5/000000000000018fd027abe096b0ab7b61775d48c01011d3685d639cfa85174e.json
+
+GET /rest/tx/<TX-HASH>.<bin|hex|json>
+GET /rest/tx/1e3a9473cdf0a861ed4b79da5fcfc6d311c3b40b0b57f72eccd6494bbf8ab440.json
+
+GET /rest/blockhashbyheight/<HEIGHT>.<bin|hex|json>
+GET /rest/blockhashbyheight/1543863.json
