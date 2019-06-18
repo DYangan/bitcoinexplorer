@@ -97,7 +97,9 @@ public class BitcoinServiceImpl implements BitcoinService{
      */
     @Override
     public void syncDetailvin(JSONArray vins) {
-
+        for (Object vin : vins) {
+            JSONObject jsonObject = new JSONObject((LinkedHashMap) vin);
+        }
     }
 
     /**
