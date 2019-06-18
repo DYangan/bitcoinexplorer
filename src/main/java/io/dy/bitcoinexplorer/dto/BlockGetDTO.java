@@ -1,17 +1,17 @@
 package io.dy.bitcoinexplorer.dto;
 
 public class BlockGetDTO {
-    private  String blockhash;
-    private  Integer height;
-    private String preBlock;
+    private String blockhash;
+    private Integer height;
+    private String prevBlcok;
     private String nextBlock;
-    private String  merkleRoot;
-    private  Short txSize;
-    private Double  outputTotal;
-    private Double  fees;
+    private String merkleRoot;
+    private Short txSize;
+    private Double outputTotal;
+    private Double fees;
     private Long time;
-    private  Double difficulty;
-    private Integer  size;
+    private Double difficulty;
+    private Integer size;
 
     public String getBlockhash() {
         return blockhash;
@@ -29,12 +29,12 @@ public class BlockGetDTO {
         this.height = height;
     }
 
-    public String getPreBlock() {
-        return preBlock;
+    public String getPrevBlcok() {
+        return prevBlcok;
     }
 
-    public void setPreBlock(String preBlock) {
-        this.preBlock = preBlock;
+    public void setPrevBlcok(String prevBlcok) {
+        this.prevBlcok = prevBlcok;
     }
 
     public String getNextBlock() {

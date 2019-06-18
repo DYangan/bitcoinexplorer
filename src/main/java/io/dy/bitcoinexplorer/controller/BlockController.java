@@ -1,7 +1,12 @@
 package io.dy.bitcoinexplorer.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import io.dy.bitcoinexplorer.api.BitcoinJsonRpcApi;
+import io.dy.bitcoinexplorer.api.BitcoinRestApi;
 import io.dy.bitcoinexplorer.dto.BlockGetDTO;
 import io.dy.bitcoinexplorer.dto.BlockListDTO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,56 +18,92 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/block")
-public class BlockController
-{
-            @GetMapping("/geRecenBlocks")
-            public List<BlockListDTO> geRecenBlocks(){
-                ArrayList<BlockListDTO> blockListDTOS = new ArrayList<>();
-                BlockListDTO blockListDTO = new BlockListDTO();
-                blockListDTO.setBlockhash("0000000000000000001a2f2ef252814df0dae4ae7f6b76014754e2bc934082d6");
-                blockListDTO.setHeight(580776);
-                blockListDTO.setTime(new Date());
-                blockListDTO.setTxsize((short)2382);
-                blockListDTO.setSize(1133699);
-                blockListDTOS.add(blockListDTO);
+public class BlockController {
 
-                BlockListDTO blockListDTO2 = new BlockListDTO();
-                blockListDTO2.setBlockhash("00000000000000000013a3301ae78e8898659409188fbf3f39085b04971ecb44");
-                blockListDTO2.setHeight(580775);
-                blockListDTO2.setTime(new Date());
-                blockListDTO2.setTxsize((short)3373);
-                blockListDTO2.setSize(1178521);
-                blockListDTOS.add(blockListDTO2);
-                return  blockListDTOS;
-            }
-            @GetMapping("/getByBlockhash")
-             public BlockGetDTO getByBlockhash(@RequestParam String blcokhash){
-                BlockGetDTO blockGetDTO = new BlockGetDTO();
-                blockGetDTO.setHeight(580785);
-                blockGetDTO.setBlockhash("0000000000000000000e9a32f6ad64b425c3aaa2da608098629203c42f3bca06");
-                blockGetDTO.setPreBlock("00000000000000000014bf1693dfb2493e0b32ac00fbdb96f04c4d3c2add197e");
-                blockGetDTO.setNextBlock("00000000000000000020baaa1796d87bd84fdfb150d9dc87bbf4c4e6b4e287b3");
-                blockGetDTO.setMerkleRoot("26cc730cdab9f4a1fc0b79a5d6878e31cb28a31f97fc5a1d5218ef05788901d3");
-                blockGetDTO.setTime(new Date().getTime());
-                blockGetDTO.setFees(1101424.86);
-                blockGetDTO.setTxSize((short) 3028);
-                blockGetDTO.setSize(1233505);
-                blockGetDTO.setDifficulty(7409399249090.25);
-                return  blockGetDTO;
+    @Autowired
+    private BitcoinRestApi bitcoinRestApi;
+
+    @Autowired
+    private BitcoinJsonRpcApi bitcoinJsonRpcApi;
+
+    @GetMapping("/getRecentBlocks")
+    public List<BlockListDTO> getRecentBlocks() throws Throwable {
+        ArrayList<BlockListDTO> blockListDTOS = new ArrayList<>();
+//
+//        BlockListDTO blockListDTO = new BlockListDTO();
+//        blockListDTO.setBlockhash("00000000000000000024b3d4793dcbba032d3fc28a0d77a37d466b956fb68aa5");
+//        blockListDTO.setHeight(580644);
+//        blockListDTO.setTime(new Date());
+//        blockListDTO.setTxsize((short) 2390);
+//        blockListDTO.setSize(1257767);
+//        blockListDTOS.add(blockListDTO);
+//
+//        BlockListDTO blockListDTO2 = new BlockListDTO();
+//        blockListDTO2.setBlockhash("00000000000000000001ce5f88601a311f1c73c0073a15fe4e5956da7fbcd78b");
+//        blockListDTO2.setHeight(580643);
+//        blockListDTO2.setTime(new Date());
+//        blockListDTO2.setTxsize((short) 2702);
+//        blockListDTO2.setSize(1322496);
+//        blockListDTOS.add(blockListDTO2);
+
+        JSONObject blockChainInfo = bitcoinRestApi.getBlockChainInfo();
+        Integer blockHeight = blockChainInfo.getInteger("blocks");
+        Integer blockFromHeight = blockHeight - 5;
+
+        String blockhash = bitcoinJsonRpcApi.getBlockhashByHeight(blockFromHeight);
+
+
+        JSONArray blockHeaders = bitcoinRestApi.getBlockHeaders(5, blockhash);
+
+        for (Object blockHeader : blockHeaders) {
+            JSONObject jsonObject = (JSONObject) blockHeader;
+            BlockListDTO blockListDTO = new BlockListDTO();
+            blockListDTO.setBlockhash(jsonObject.getString("hash"));
+            blockListDTO.setHeight(jsonObject.getInteger("height"));
+            Long time = jsonObject.getLong("time");
+            blockListDTO.setTime(new Date(1000*time));
+            blockListDTO.setTxsize(jsonObject.getShort("nTx"));
+            //todo
+            blockListDTO.setSize(null);
+            blockListDTOS.add(blockListDTO);
         }
-            @GetMapping("/getByHeight")
-            public BlockGetDTO  getByHeight(@RequestParam Integer height){
-                BlockGetDTO blockGetDTO = new BlockGetDTO();
-                blockGetDTO.setBlockhash("0000000000000000000e9a32f6ad64b425c3aaa2da608098629203c42f3bca06");
-                blockGetDTO.setHeight(580785);
-                blockGetDTO.setPreBlock("00000000000000000014bf1693dfb2493e0b32ac00fbdb96f04c4d3c2add197e");
-                blockGetDTO.setNextBlock("00000000000000000020baaa1796d87bd84fdfb150d9dc87bbf4c4e6b4e287b3");
-                blockGetDTO.setMerkleRoot("26cc730cdab9f4a1fc0b79a5d6878e31cb28a31f97fc5a1d5218ef05788901d3");
-                blockGetDTO.setTime(new Date().getTime());
-                blockGetDTO.setFees(1101424.86);
-                blockGetDTO.setTxSize((short) 3028);
-                blockGetDTO.setSize(1233505);
-                blockGetDTO.setDifficulty(7409399249090.25);
-                return  blockGetDTO;
-            }
+
+        return blockListDTOS;
+    }
+
+    @GetMapping("/getByBlockhash")
+    public BlockGetDTO getByBlockhash(@RequestParam String blockhash) {
+        BlockGetDTO blockGetDTO = new BlockGetDTO();
+        blockGetDTO.setBlockhash("00000000000000000001ce5f88601a311f1c73c0073a15fe4e5956da7fbcd78b");
+        blockGetDTO.setHeight(580643);
+        blockGetDTO.setPrevBlcok("00000000000000000005ac7036789bfec28d230dff491f3382f6daf6523f5c44");
+        blockGetDTO.setNextBlock("00000000000000000024b3d4793dcbba032d3fc28a0d77a37d466b956fb68aa5");
+        blockGetDTO.setMerkleRoot("07ac3d1c827b5c3ef69a7341bbdb2bf72339139b5f9e7e782d1bc82265b17798");
+        blockGetDTO.setTime(new Date().getTime());
+        blockGetDTO.setFees(8766.38);
+        blockGetDTO.setTxSize((short) 2702);
+        blockGetDTO.setSize(1322496);
+        blockGetDTO.setDifficulty(7409399249090.25);
+
+        return blockGetDTO;
+    }
+
+    @GetMapping("/getByHeight")
+    public BlockGetDTO getByHeight(@RequestParam Integer height) {
+
+        BlockGetDTO blockGetDTO = new BlockGetDTO();
+        blockGetDTO.setBlockhash("00000000000000000001ce5f88601a311f1c73c0073a15fe4e5956da7fbcd78b");
+        blockGetDTO.setHeight(580643);
+        blockGetDTO.setPrevBlcok("00000000000000000005ac7036789bfec28d230dff491f3382f6daf6523f5c44");
+        blockGetDTO.setNextBlock("00000000000000000024b3d4793dcbba032d3fc28a0d77a37d466b956fb68aa5");
+        blockGetDTO.setMerkleRoot("07ac3d1c827b5c3ef69a7341bbdb2bf72339139b5f9e7e782d1bc82265b17798");
+        blockGetDTO.setTime(new Date().getTime());
+        blockGetDTO.setFees(8766.38);
+        blockGetDTO.setTxSize((short) 2702);
+        blockGetDTO.setSize(1322496);
+        blockGetDTO.setDifficulty(7409399249090.25);
+
+        return blockGetDTO;
+    }
+
 }

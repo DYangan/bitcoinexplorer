@@ -50,4 +50,5 @@ import java.util.HashMap;
             String result = jsonRpcHttpClient.invoke("getblockhash", new Object[]{height}, String.class);
             return result;
         }
+
     }
