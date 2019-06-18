@@ -11,9 +11,9 @@ public class BitcoinScheduler {
      * 测试同步
      */
     private Logger  logger= LoggerFactory.getLogger(this.getClass());
-    @Scheduled(fixedDelay = 10*60*1000)
+    @Scheduled(fixedRate = 10*60*1000)
     public  void  syncData()
     {
-        logger.info("begin to data");
+        logger.info("begin to sync  bitcoin data");
     }
 }
