@@ -6,24 +6,33 @@ import com.googlecode.jsonrpc4j.JsonRpcHttpClient;
 import io.dy.bitcoinexplorer.api.BitcoinJsonRpcApi;
 import io.dy.bitcoinexplorer.api.BitcoinRestApi;
 import io.dy.bitcoinexplorer.api.impl.BitcoinJsonRpcApiImpl;
+import io.dy.bitcoinexplorer.dao.BlockMapper;
+import io.dy.bitcoinexplorer.po.Block;
+import io.dy.bitcoinexplorer.service.BitcoinService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.util.Base64;
+import java.util.Date;
 import java.util.HashMap;
 
 
 @RestController
 @RequestMapping("/temp")
-
+@EnableAutoConfiguration
 public class TempController {
 @Autowired
   private BitcoinRestApi  bitcoinRestApi;
 @Autowired
  private BitcoinJsonRpcApi  bitcoinJsonRpcApi;
+@Autowired
+private BlockMapper  blockMapper;
+@Autowired
+private BitcoinService  bitcoinService;
 //    @GetMapping("/getBlockChainInfo")
 //    public String  getBlockChainInfo(){
 //        JSONObject blockChainInfo = bitcoinRestApi.getBlockChainInfo();
@@ -67,13 +76,17 @@ public class TempController {
 //    }
 
     @GetMapping("/test")
-    private  JSONObject test() throws  Throwable{
+    private  String test() throws  Throwable{
         //JSONObject blockChainInfo = bitcoinJsonRpcApi.getBlockChainInfo();
        // JSONObject block = bitcoinJsonRpcApi.getBlockByHash("0000000000000119c7cef78c8d508e0e1b36a680baf89a659d14c224315e238b");
        // JSONObject transaction = bitcoinJsonRpcApi.getTransactionById("1d7d5226bb2d39e328262e9816694458d2ae081af6e380790bdc00b968ce0daf");
 
         //JSONObject utxo = bitcoinRestApi.getUTXO("1d7d5226bb2d39e328262e9816694458d2ae081af6e380790bdc00b968ce0daf", 0);
         //JSONObject utxoCheckMempool = bitcoinRestApi.getUTXOCheckMempool("0b9a0ea6c034834e79db101967985e1b0d6358cad111444ff52075106acba8d6", 0);
+
+        String  tempBlockhash="00000000000000bb8d77e0c70458312cf4a4baecacecb00892802973bf201ac7";
+
+        bitcoinService.syncBlock(tempBlockhash);
 
         return  null;
 
