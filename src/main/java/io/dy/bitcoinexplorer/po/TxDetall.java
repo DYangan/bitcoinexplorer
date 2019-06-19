@@ -50,4 +50,7 @@ public class TxDetall {
     public void setTxhash(String txhash) {
         this.txhash = txhash == null ? null : txhash.trim();
     }
+
+    public void setAddress(String address) {
+    }
 }
