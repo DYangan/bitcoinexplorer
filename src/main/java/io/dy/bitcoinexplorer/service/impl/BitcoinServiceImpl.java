@@ -113,10 +113,10 @@ public class BitcoinServiceImpl implements BitcoinService{
             txDetail.setAmount(jsonObject.getDouble("value"));
             txDetail.setType((byte) TxDetailType.Receive.ordinal());
             JSONObject scriptPubKey = jsonObject.getJSONObject("scriptPubKey");
-            JSONArray addresses = scriptPubKey.getJSONArray("addresses");
+            JSONArray addresses = scriptPubKey.getJSONArray("address");
             if (addresses != null){
                 String address = addresses.getString(0);
-                txDetail.setAddress(address);
+                txDetail.setAdress(address);
             }
             txDetallMapper.insert(txDetail);
         }
@@ -144,7 +144,7 @@ public class BitcoinServiceImpl implements BitcoinService{
                 JSONArray addresses = scriptPubKey.getJSONArray("addresses");
                 if (addresses != null){
                     String address = addresses.getString(0);
-                    txDetail.setAddress(address);
+                    txDetail.setAdress(address);
                 }
                 txDetallMapper.insert(txDetail);
             }

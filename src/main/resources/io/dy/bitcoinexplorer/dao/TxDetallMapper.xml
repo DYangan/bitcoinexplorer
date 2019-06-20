@@ -90,4 +90,10 @@
       txhash = #{txhash,jdbcType=CHAR}
     where tx_detall_id = #{txDetallId,jdbcType=BIGINT}
   </update>
+
+<!--consummer-->
+  <select id="getBalance" parameterType="java.lang.String" resultType="java.lang.Double">
+    select SUM(amount) from tx_detall where adress=#{address}
+  </select>
+
 </mapper>

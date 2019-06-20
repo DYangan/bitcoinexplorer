@@ -114,4 +114,6 @@
       confirmations = #{confirmations,jdbcType=INTEGER}
     where txhash = #{txhash,jdbcType=CHAR}
   </update>
+
+
 </mapper>
